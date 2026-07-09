@@ -1,164 +1,145 @@
- 
-  // Mobile menu functions
-  function toggleMenu() {
+
+function toggleMenu() {
+  const menu = document.getElementById("mobileMenu");
+  if (menu) menu.classList.toggle("open");
+}
+
+
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector(".form-submit");
+  if (!btn) return;
+  
+  btn.textContent = "Sent! We'll be in touch soon ✓";
+  btn.style.background = "var(--teal)";
+  btn.style.color = "#ffffff";
+  btn.disabled = true;
+}
+
+// Global anchor link event setup to automatically close mobile menu
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+  anchor.addEventListener("click", () => {
     const menu = document.getElementById("mobileMenu");
-    if (menu) menu.classList.toggle("open");
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector(".form-submit");
-    if (!btn) return;
-    btn.textContent = "Sent! We'll be in touch soon ✓";
-    btn.style.background = "var(--teal)";
-    btn.style.color = "#ffffff";
-    btn.disabled = true;
-  }
-
-  // Gallery Slideshow
-  document.addEventListener('DOMContentLoaded', function() {
-    const track = document.getElementById('sliderTrack');
-    const slides = document.querySelectorAll('.slide');
-    const thumbs = document.querySelectorAll('.thumb');
-    const prevBtn = document.getElementById('sliderPrev');
-    const nextBtn = document.getElementById('sliderNext');
-    const progressFill = document.getElementById('sliderProgress');
-    
-    console.log(' Found elements:', {
-      track: !!track,
-      slides: slides.length,
-      thumbs: thumbs.length,
-      prevBtn: !!prevBtn,
-      nextBtn: !!nextBtn,
-      progressFill: !!progressFill
-    });
-    
-    if (!track || slides.length === 0) {
-      console.error('❌ Gallery elements not found!');
-      return;
-    }
-    
-    let currentIndex = 0;
-    let autoplayTimer = null;
-    const totalSlides = slides.length;
-    
-    console.log(' Gallery initialized with', totalSlides, 'slides');
-    
-    // Function to update slide
-    function updateSlide(index) {
-      // Clamp index
-      if (index < 0) index = totalSlides - 1;
-      if (index >= totalSlides) index = 0;
-      currentIndex = index;
-      
-      console.log(' Moving to slide:', currentIndex + 1);
-      
-      // Move track
-      track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
-      
-      // Update slides
-      slides.forEach(function(slide, i) {
-        if (i === currentIndex) {
-          slide.classList.add('active');
-        } else {
-          slide.classList.remove('active');
-        }
-      });
-      
-      // Update thumbs
-      thumbs.forEach(function(thumb, i) {
-        if (i === currentIndex) {
-          thumb.classList.add('active');
-        } else {
-          thumb.classList.remove('active');
-        }
-      });
-      
-      // Update progress
-      if (progressFill) {
-        var progress = ((currentIndex + 1) / totalSlides) * 100;
-        progressFill.style.width = progress + '%';
-      }
-    }
-    
-    // Navigation functions
-    function nextSlide() {
-      console.log(' Next slide');
-      updateSlide(currentIndex + 1);
-      resetAutoplay();
-    }
-    
-    function prevSlide() {
-      console.log(' Previous slide');
-      updateSlide(currentIndex - 1);
-      resetAutoplay();
-    }
-    
-    // Autoplay
-    function startAutoplay() {
-      stopAutoplay();
-      console.log(' Starting autoplay');
-      autoplayTimer = setInterval(nextSlide, 4000);
-    }
-    
-    function stopAutoplay() {
-      if (autoplayTimer) {
-        clearInterval(autoplayTimer);
-        autoplayTimer = null;
-        console.log(' Stopped autoplay');
-      }
-    }
-    
-    function resetAutoplay() {
-      stopAutoplay();
-      startAutoplay();
-    }
-    
-    // Event listeners
-    if (nextBtn) {
-      nextBtn.addEventListener('click', nextSlide);
-      console.log(' Next button listener added');
-    }
-    
-    if (prevBtn) {
-      prevBtn.addEventListener('click', prevSlide);
-      console.log(' Previous button listener added');
-    }
-    
-    thumbs.forEach(function(thumb, index) {
-      thumb.addEventListener('click', function() {
-        console.log(' Thumb clicked:', index + 1);
-        updateSlide(index);
-        resetAutoplay();
-      });
-    });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        prevSlide();
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        nextSlide();
-      }
-    });
-    
-    // Pause on hover
-    const slider = document.getElementById('gallerySlider');
-    if (slider) {
-      slider.addEventListener('mouseenter', function() {
-        console.log(' Mouse entered - pausing');
-        stopAutoplay();
-      });
-      
-      slider.addEventListener('mouseleave', function() {
-        console.log(' Mouse left - resuming');
-        startAutoplay();
-      });
-    }
-    
-    // Start
-    updateSlide(0);
-    startAutoplay();
+    if (menu) menu.classList.remove("open");
   });
+});
+
+
+// ── 2. Gallery Slideshow System Module ──
+
+document.addEventListener('DOMContentLoaded', () => {
+  const AUTOPLAY_DELAY = 4000; // Time in ms per slide
+  
+  const track = document.getElementById('sliderTrack');
+  const slides = document.querySelectorAll('.slide');
+  const thumbs = document.querySelectorAll('.thumb');
+  const prevBtn = document.getElementById('sliderPrev');
+  const nextBtn = document.getElementById('sliderNext');
+  const progressFill = document.getElementById('sliderProgress');
+  const slider = document.getElementById('gallerySlider');
+  
+  // Guard clause: Exit cleanly if slider is absent on the page
+  if (!track || slides.length === 0) return;
+  
+  let currentIndex = 0;
+  let autoplayTimer = null;
+  const totalSlides = slides.length;
+  
+  /**
+   * Updates state layout transitions for slides, thumbnails, and tracks
+   */
+  const updateSlide = (index) => {
+    // Loop boundaries gracefully
+    if (index < 0) index = totalSlides - 1;
+    if (index >= totalSlides) index = 0;
+    currentIndex = index;
+    
+    // Translate structural track position
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    
+    // Sync active item element modifiers
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === currentIndex);
+    });
+    
+    thumbs.forEach((thumb, i) => {
+      thumb.classList.toggle('active', i === currentIndex);
+    });
+    
+    // Center active thumbnail inside responsive scrolling containers
+    if (thumbs[currentIndex]) {
+      thumbs[currentIndex].scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
+    }
+    
+    // Sync progress timeline fills
+    if (progressFill) {
+      const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+      progressFill.style.width = `${progressPct}%`;
+    }
+  };
+  
+  // Helper Actions
+  const nextSlide = () => {
+    updateSlide(currentIndex + 1);
+    resetAutoplay();
+  };
+  
+  const prevSlide = () => {
+    updateSlide(currentIndex - 1);
+    resetAutoplay();
+  };
+  
+  // Autoplay Lifecycle Methods
+  const startAutoplay = () => {
+    stopAutoplay();
+    autoplayTimer = setInterval(nextSlide, AUTOPLAY_DELAY);
+  };
+  
+  const stopAutoplay = () => {
+    if (autoplayTimer) {
+      clearInterval(autoplayTimer);
+      autoplayTimer = null;
+    }
+  };
+  
+  const resetAutoplay = () => {
+    stopAutoplay();
+    startAutoplay();
+  };
+  
+  // Component Event Listeners
+  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+  
+  thumbs.forEach((thumb, index) => {
+    thumb.addEventListener('click', () => {
+      updateSlide(index);
+      resetAutoplay();
+    });
+  });
+  
+  // Keyboard Bindings
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevSlide();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextSlide();
+    }
+  });
+  
+  // Hover & Tab Visibility Listeners
+  if (slider) {
+    slider.addEventListener('mouseenter', stopAutoplay);
+    slider.addEventListener('mouseleave', startAutoplay);
+  }
+  
+  document.addEventListener('visibilitychange', () => {
+    document.hidden ? stopAutoplay() : startAutoplay();
+  });
+  
+  // Startup Lifecycle Runs
+  updateSlide(0);
+  startAutoplay();
+});
