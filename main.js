@@ -12,160 +12,276 @@ function handleSubmit(e) {
   btn.disabled = true;
 }
 
-
-
 document.querySelectorAll('a[href^="#"]').forEach((a) => {
   a.addEventListener("click", () => {
     document.getElementById("mobileMenu").classList.remove("open");
   });
 });
-/* ── ConnectHive Gallery Slideshow ── */
-(function () {
-  const AUTOPLAY_DELAY = 500; // ms per slide
+/**
+ * Gallery Slideshow - ConnectHive
+ * Professional slideshow with autoplay, thumbnails, and keyboard support
+ */
 
-  const track      = document.getElementById('sliderTrack');
-  const slides     = track.querySelectorAll('.slide');
-  const thumbs     = document.querySelectorAll('#sliderThumbs .thumb');
-  const btnPrev    = document.getElementById('sliderPrev');
-  const btnNext    = document.getElementById('sliderNext');
-  const progressEl = document.getElementById('sliderProgress');
-  const numEl      = document.getElementById('slideCurrentNum');
-  const totalEl    = document.getElementById('slideTotalNum');
-  const wrapper    = document.getElementById('sliderTrackWrap');
-
-  const total = slides.length;
-  let current = 0;
-  let rafId = null;
-  let startTs = null;
+document.addEventListener('DOMContentLoaded', function() {
+  // ── DOM ELEMENTS ──
+  const track = document.getElementById('sliderTrack');
+  const slides = document.querySelectorAll('.slide');
+  const thumbs = document.querySelectorAll('.thumb');
+  const prevBtn = document.getElementById('sliderPrev');
+  const nextBtn = document.getElementById('sliderNext');
+  const progressFill = document.getElementById('sliderProgress');
+  const pauseBtn = document.getElementById('sliderPauseBtn');
+  const currentNum = document.getElementById('slideCurrentNum');
+  const totalNum = document.getElementById('slideTotalNum');
+  
+  // Early return if elements don't exist
+  if (!track || slides.length === 0) return;
+  
+  // ── STATE ──
+  let currentIndex = 0;
+  let autoplayTimer = null;
   let isPaused = false;
-
-  // Init
-  totalEl.textContent = total;
-
-  /* ── Core: go to slide ── */
-  function goTo(idx, instant = false) {
-    // wrap
-    idx = ((idx % total) + total) % total;
-
-    // update classes
-    slides[current].classList.remove('active');
-    thumbs[current].classList.remove('active');
-    current = idx;
-    slides[current].classList.add('active');
-    thumbs[current].classList.add('active');
-
-    // translate track
-    if (instant) {
-      track.style.transition = 'none';
-      track.style.transform  = `translateX(-${current * 100}%)`;
-      // force reflow then re-enable transition
-      track.getBoundingClientRect();
-      track.style.transition = '';
-    } else {
-      track.style.transform = `translateX(-${current * 100}%)`;
+  const totalSlides = slides.length;
+  const AUTOPLAY_DELAY = 4000;
+  
+  // ── SET TOTAL SLIDES ──
+  if (totalNum) {
+    totalNum.textContent = String(totalSlides).padStart(2, '0');
+  }
+  
+  // ── UPDATE SLIDE ──
+  function updateSlide(index, shouldResetAutoplay = true) {
+    // Clamp index
+    if (index < 0) index = totalSlides - 1;
+    if (index >= totalSlides) index = 0;
+    currentIndex = index;
+    
+    // Move track
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    
+    // Update slides
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === currentIndex);
+    });
+    
+    // Update thumbs
+    thumbs.forEach((thumb, i) => {
+      thumb.classList.toggle('active', i === currentIndex);
+    });
+    
+    // Update counter
+    if (currentNum) {
+      currentNum.textContent = String(currentIndex + 1).padStart(2, '0');
     }
-
-    // counter
-    numEl.textContent = current + 1;
-
-    // scroll active thumb into view
-    thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-
-    // restart progress
-    resetProgress();
-  }
-
-  /* ── Progress bar (rAF-based, no setInterval drift) ── */
-  function resetProgress() {
-    cancelAnimationFrame(rafId);
-    progressEl.style.width = '0%';
-    startTs = null;
-    if (!isPaused) tick();
-  }
-
-  function tick(ts) {
-    if (!startTs) startTs = ts;
-    const elapsed = ts - startTs;
-    const pct = Math.min((elapsed / AUTOPLAY_DELAY) * 100, 100);
-    progressEl.style.width = pct + '%';
-
-    if (pct < 100) {
-      rafId = requestAnimationFrame(tick);
-    } else {
-      goTo(current + 1);
+    
+    // Update progress
+    if (progressFill) {
+      const progress = ((currentIndex + 1) / totalSlides) * 100;
+      progressFill.style.width = `${progress}%`;
+    }
+    
+    // Reset autoplay
+    if (shouldResetAutoplay && !isPaused) {
+      resetAutoplay();
     }
   }
-
-  function pause() {
-    if (isPaused) return;
-    isPaused = true;
-    cancelAnimationFrame(rafId);
+  
+  // ── NAVIGATION ──
+  function nextSlide() {
+    updateSlide(currentIndex + 1);
   }
-
-  function resume() {
-    if (!isPaused) return;
-    isPaused = false;
-    // continue from where progress bar left off
-    const pct = parseFloat(progressEl.style.width) || 0;
-    const remaining = AUTOPLAY_DELAY * (1 - pct / 100);
-    startTs = null;
-    rafId = requestAnimationFrame(function tickResume(ts) {
-      if (!startTs) startTs = ts;
-      const elapsed = ts - startTs;
-      const newPct = pct + Math.min((elapsed / remaining) * (100 - pct), 100 - pct);
-      progressEl.style.width = newPct + '%';
-      if (newPct < 100) {
-        rafId = requestAnimationFrame(tickResume);
-      } else {
-        goTo(current + 1);
+  
+  function prevSlide() {
+    updateSlide(currentIndex - 1);
+  }
+  
+  function goToSlide(index) {
+    updateSlide(index);
+  }
+  
+  // ── AUTOPLAY ──
+  function startAutoplay() {
+    stopAutoplay();
+    if (!isPaused) {
+      autoplayTimer = setInterval(nextSlide, AUTOPLAY_DELAY);
+    }
+  }
+  
+  function stopAutoplay() {
+    if (autoplayTimer) {
+      clearInterval(autoplayTimer);
+      autoplayTimer = null;
+    }
+  }
+  
+  function resetAutoplay() {
+    stopAutoplay();
+    startAutoplay();
+  }
+  
+  function togglePause() {
+    isPaused = !isPaused;
+    
+    // Update pause button
+    if (pauseBtn) {
+      pauseBtn.classList.toggle('paused', isPaused);
+      pauseBtn.setAttribute('aria-label', isPaused ? 'Play slideshow' : 'Pause slideshow');
+    }
+    
+    if (isPaused) {
+      stopAutoplay();
+    } else {
+      startAutoplay();
+    }
+  }
+  
+  // ── EVENT LISTENERS ──
+  
+  // Navigation buttons
+  if (nextBtn) {
+    nextBtn.addEventListener('click', nextSlide);
+  }
+  
+  if (prevBtn) {
+    prevBtn.addEventListener('click', prevSlide);
+  }
+  
+  // Thumbnails
+  thumbs.forEach((thumb, index) => {
+    thumb.addEventListener('click', function() {
+      goToSlide(index);
+    });
+  });
+  
+  // Pause button
+  if (pauseBtn) {
+    pauseBtn.addEventListener('click', togglePause);
+  }
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    // Only if gallery is in viewport
+    const slider = document.getElementById('gallerySlider');
+    const rect = slider?.getBoundingClientRect();
+    if (!rect || rect.bottom < 0 || rect.top > window.innerHeight) return;
+    
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevSlide();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextSlide();
+    } else if (e.key === ' ' || e.key === 'Space') {
+      e.preventDefault();
+      togglePause();
+    }
+  });
+  
+  // Pause on hover
+  const slider = document.getElementById('gallerySlider');
+  if (slider) {
+    slider.addEventListener('mouseenter', function() {
+      if (!isPaused) {
+        stopAutoplay();
+      }
+    });
+    
+    slider.addEventListener('mouseleave', function() {
+      if (!isPaused) {
+        startAutoplay();
       }
     });
   }
-
-  /* ── Button controls ── */
-  btnPrev.addEventListener('click', () => goTo(current - 1));
-  btnNext.addEventListener('click', () => goTo(current + 1));
-
-  /* ── Thumbnail click ── */
-  thumbs.forEach((thumb, i) => thumb.addEventListener('click', () => goTo(i)));
-
-  /* ── Pause on hover ── */
-  const slider = document.getElementById('gallerySlider');
-  slider.addEventListener('mouseenter', pause);
-  slider.addEventListener('mouseleave', resume);
-
-  /* ── Touch / swipe support ── */
-  let touchStartX = 0, touchStartY = 0, isDragging = false;
-
-  wrapper.addEventListener('touchstart', e => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-    isDragging  = false;
-  }, { passive: true });
-
-  wrapper.addEventListener('touchmove', e => {
-    const dx = e.touches[0].clientX - touchStartX;
-    const dy = e.touches[0].clientY - touchStartY;
-    if (Math.abs(dx) > Math.abs(dy)) isDragging = true;
-  }, { passive: true });
-
-  wrapper.addEventListener('touchend', e => {
-    if (!isDragging) return;
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 50) goTo(dx < 0 ? current + 1 : current - 1);
+  
+  // ── TOUCH SUPPORT ──
+  let touchStartX = 0;
+  let touchDiff = 0;
+  const trackWrap = document.getElementById('sliderTrackWrap');
+  
+  if (trackWrap) {
+    trackWrap.addEventListener('touchstart', function(e) {
+      touchStartX = e.touches[0].clientX;
+      touchDiff = 0;
+      if (!isPaused) stopAutoplay();
+    }, { passive: true });
+    
+    trackWrap.addEventListener('touchmove', function(e) {
+      touchDiff = touchStartX - e.touches[0].clientX;
+    }, { passive: true });
+    
+    trackWrap.addEventListener('touchend', function() {
+      const threshold = 50;
+      if (Math.abs(touchDiff) > threshold) {
+        if (touchDiff > 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      } else if (!isPaused) {
+        startAutoplay();
+      }
+      touchDiff = 0;
+    }, { passive: true });
+  }
+  
+  // ── MOUSE DRAG ──
+  let mouseDown = false;
+  let mouseStartX = 0;
+  let mouseDiff = 0;
+  
+  if (trackWrap) {
+    trackWrap.addEventListener('mousedown', function(e) {
+      mouseDown = true;
+      mouseStartX = e.clientX;
+      mouseDiff = 0;
+      if (!isPaused) stopAutoplay();
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+      if (!mouseDown) return;
+      mouseDiff = mouseStartX - e.clientX;
+    });
+    
+    document.addEventListener('mouseup', function() {
+      if (!mouseDown) return;
+      mouseDown = false;
+      const threshold = 50;
+      if (Math.abs(mouseDiff) > threshold) {
+        if (mouseDiff > 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      } else if (!isPaused) {
+        startAutoplay();
+      }
+      mouseDiff = 0;
+    });
+  }
+  
+  // ── VISIBILITY CHANGE (pause when tab is hidden) ──
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      // Tab hidden - pause
+      if (!isPaused) {
+        stopAutoplay();
+      }
+    } else {
+      // Tab visible - resume
+      if (!isPaused && !autoplayTimer) {
+        startAutoplay();
+      }
+    }
   });
-
-  /* ── Keyboard support ── */
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowLeft')  goTo(current - 1);
-    if (e.key === 'ArrowRight') goTo(current + 1);
+  
+  // ── INIT ──
+  updateSlide(0, false);
+  startAutoplay();
+  
+  // ── CLEANUP ──
+  window.addEventListener('beforeunload', function() {
+    stopAutoplay();
   });
-
-  /* ── Visibility API: pause when tab is hidden ── */
-  document.addEventListener('visibilitychange', () => {
-    document.hidden ? pause() : resume();
-  });
-
-  /* ── Start ── */
-  requestAnimationFrame(tick);
-})();
+  
+  console.log('🎯 Gallery initialized with', totalSlides, 'slides');
+});
