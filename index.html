@@ -287,72 +287,110 @@
       </div>
     </section>
 
-    <!-- GALLERY -->
-    <section id="gallery">
-      <p class="section-eyebrow">Our Events</p>
-      <h2 class="section-title">Where the magic happens</h2>
-      <p class="section-subtitle">
-        Every event tells a story. Here's a glimpse of ConnectHive in action
-      </p>
-      <div class="gallery-grid">
-        <div class="gallery-item tall">
-          <div class="gallery-placeholder">
-            <svg viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-            <span>Team Building Event Photo</span>
-          </div>
-          <div class="gallery-overlay"><span>Full-Day Experience</span></div>
-        </div>
-        <div class="gallery-item">
-          <div class="gallery-placeholder">
-            <svg viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-            <span>Cultural Experience Photo</span>
-          </div>
-          <div class="gallery-overlay"><span>Rwandan Cooking Class</span></div>
-        </div>
-        <div class="gallery-item">
-          <div class="gallery-placeholder">
-            <svg viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-            <span>Corporate Event Photo</span>
-          </div>
-          <div class="gallery-overlay"><span>Company Celebration</span></div>
-        </div>
-        <div class="gallery-item">
-          <div class="gallery-placeholder">
-            <svg viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-            <span>Outdoor Activity Photo</span>
-          </div>
-          <div class="gallery-overlay"><span>Outdoor Olympics</span></div>
-        </div>
-        <div class="gallery-item">
-          <div class="gallery-placeholder">
-            <svg viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-            <span>Workshop Photo</span>
-          </div>
-          <div class="gallery-overlay"><span>Leadership Workshop</span></div>
-        </div>
-      </div>
-    </section>
+<!-- GALLERY -->
+<!-- GALLERY -->
+<section id="gallery">
+  <p class="section-eyebrow">Our Events</p>
+  <h2 class="section-title">Where the magic happens</h2>
+  <p class="section-subtitle">
+    Every event tells a story. Here's a glimpse of ConnectHive in action.
+  </p>
 
+  <div class="gallery-slider" id="gallerySlider">
+    
+    <!-- Progress bar -->
+    <div class="slider-progress">
+      <div class="slider-progress-fill" id="sliderProgress"></div>
+    </div>
+
+    <!-- Main track -->
+    <div class="slider-track-wrap" id="sliderTrackWrap">
+      <div class="slider-track" id="sliderTrack">
+
+        <div class="slide active">
+          <div class="slide-image-wrapper">
+            <img src="images/celebration.jpg" alt="Full-Day Corporate Retreat" />
+          </div>
+          <div class="slide-caption">
+            <span class="slide-tag">Team Building</span>
+            <h3>Full-Day Corporate Retreat</h3>
+            <p>A full-team experience in the heart of Kigali, Rwanda</p>
+          </div>
+        </div>
+
+        <div class="slide">
+          <div class="slide-image-wrapper">
+            <img src="images/cultural-event.jpg" alt="Rwandan Cooking Class" />
+          </div>
+          <div class="slide-caption">
+            <span class="slide-tag">Cultural</span>
+            <h3>Rwandan Cooking Class</h3>
+            <p>Authentic cultural immersion for international groups</p>
+          </div>
+        </div>
+
+        <div class="slide">
+          <div class="slide-image-wrapper">
+            <img src="images/outdoor-activity.jpg" alt="Outdoor Olympics" />
+          </div>
+          <div class="slide-caption">
+            <span class="slide-tag">Outdoor</span>
+            <h3>Outdoor Olympics</h3>
+            <p>Competitive team challenges in beautiful Kigali</p>
+          </div>
+        </div>
+
+        <div class="slide">
+          <div class="slide-image-wrapper">
+            <img src="images/workshop.jpg" alt="Leadership Workshop" />
+          </div>
+          <div class="slide-caption">
+            <span class="slide-tag">Workshop</span>
+            <h3>Leadership Workshop</h3>
+            <p>Building stronger leaders through interactive sessions</p>
+          </div>
+        </div>
+
+        <div class="slide">
+          <div class="slide-image-wrapper">
+            <img src="images/outdoor-activity (2).jpg" alt="Milestone Celebration" />
+          </div>
+          <div class="slide-caption">
+            <span class="slide-tag">Celebration</span>
+            <h3>Milestone Celebration</h3>
+            <p>Celebrating achievements with style and impact</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <button class="slider-btn prev" id="sliderPrev" aria-label="Previous slide">‹</button>
+    <button class="slider-btn next" id="sliderNext" aria-label="Next slide">›</button>
+
+    <!-- Thumbnails -->
+    <!-- Thumbnails - Full Width -->
+<div class="slider-thumbs" id="sliderThumbs">
+  <div class="thumb active" data-index="0">
+    <img src="images/celebration.jpg" alt="Thumb 1" loading="lazy" />
+  </div>
+  <div class="thumb" data-index="1">
+    <img src="images/cultural-event.jpg" alt="Thumb 2" loading="lazy" />
+  </div>
+  <div class="thumb" data-index="2">
+    <img src="images/outdoor-activity.jpg" alt="Thumb 3" loading="lazy" />
+  </div>
+  <div class="thumb" data-index="3">
+    <img src="images/workshop.jpg" alt="Thumb 4" loading="lazy" />
+  </div>
+  <div class="thumb" data-index="4">
+    <img src="images/outdoor-activity (2).jpg" alt="Thumb 5" loading="lazy" />
+  </div>
+</div>
+
+  </div>
+</section>
     <!-- CONTACT -->
     <section id="contact">
       <div class="contact-grid">
@@ -470,24 +508,6 @@
       </div>
     </footer>
 
-    <script>
-      function toggleMenu() {
-        document.getElementById("mobileMenu").classList.toggle("open");
-      }
-
-      function handleSubmit(e) {
-        e.preventDefault();
-        const btn = e.target.querySelector(".form-submit");
-        btn.textContent = "Sent! We'll be in touch soon ✓";
-        btn.style.background = "var(--teal)";
-        btn.disabled = true;
-      }
-
-      document.querySelectorAll('a[href^="#"]').forEach((a) => {
-        a.addEventListener("click", () => {
-          document.getElementById("mobileMenu").classList.remove("open");
-        });
-      });
-    </script>
-  </body>
+  <script src="main.js"></script>
+</body>
 </html>
