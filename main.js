@@ -66,9 +66,14 @@ document.addEventListener('DOMContentLoaded', () => {
       thumb.classList.toggle('active', i === currentIndex);
     });
     
-    // Center active thumbnail inside responsive scrolling containers
-    if (thumbs[currentIndex]) {
-      thumbs[currentIndex].scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
+    // Center active thumbnail inside the thumbs strip only (never the page)
+    const activeThumb = thumbs[currentIndex];
+    const thumbsStrip = activeThumb?.parentElement;
+    if (activeThumb && thumbsStrip) {
+      const left =
+        activeThumb.offsetLeft -
+        (thumbsStrip.clientWidth - activeThumb.offsetWidth) / 2;
+      thumbsStrip.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
     }
     
     // Sync progress timeline fills
