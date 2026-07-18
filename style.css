@@ -63,21 +63,25 @@ nav {
   text-decoration: none;
 }
 
+/* Container for the logo image */
 .nav-logo-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--teal);
-  border-radius: 8px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  height: 90px; /* Controls the uniform height boundary */
+  width: auto;  /* Allows the width to scale proportionally */
 }
 
-.nav-logo-icon svg {
-  width: 20px;
-  height: 20px;
-  fill: white;
+/* The actual logo image file styling */
+.nav-logo-icon img {
+  height: 100%;       /* Fills up the parent container height perfectly */
+  width: auto;        /* Preserves the original logo aspect ratio without distortion */
+  max-width: 100%;    /* Prevents the image from breaking layout boxes */
+  object-fit: contain; /* Ensures the image fits beautifully inside its boundary */
+  display: block;
 }
+
+
 
 .nav-wordmark {
   font-size: 18px;

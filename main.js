@@ -6,15 +6,62 @@ function toggleMenu() {
 
 
 function handleSubmit(e) {
-  e.preventDefault();
-  const btn = e.target.querySelector(".form-submit");
+  e.preventDefault(); // Stops the page from redirecting
+  
+  const form = e.target;
+  const btn = form.querySelector(".form-submit");
   if (!btn) return;
   
-  btn.textContent = "Sent! We'll be in touch soon ✓";
-  btn.style.background = "var(--teal)";
-  btn.style.color = "#ffffff";
+  // 1. Visually change button to show progress
+  const originalBtnText = btn.textContent;
+  btn.textContent = "Sending...";
   btn.disabled = true;
+
+  // 2. Capture and parse fields into JSON format Web3Forms requires
+  const formData = new FormData(form);
+  const object = Object.fromEntries(formData);
+  const json = JSON.stringify(object);
+
+  // 3. Send AJAX data quietly in the background
+  fetch(form.action, {
+    method: form.method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: json
+  })
+  .then(async (response) => {
+    let res = await response.json();
+    if (response.status === 200) {
+      // Success: Change button styling to your success state
+      btn.textContent = "Sent! We'll be in touch soon";
+      btn.style.background = "var(--teal)";
+      btn.style.color = "#ffffff";
+      
+      // Clear inputs
+      form.reset(); 
+    } else {
+      // Server-side validation issue
+      throw new Error(res.message || "Form submission failed");
+    }
+  })
+  .catch(error => {
+    console.error("Web3Forms Error:", error);
+    btn.textContent = "Error! Please try again.";
+    btn.style.background = "#ff4d4d"; // Red error color
+    btn.disabled = false;
+    
+    // Reset button after 3 seconds so they can retry
+    setTimeout(() => {
+      btn.textContent = originalBtnText;
+      btn.style.background = "";
+      btn.style.color = "";
+    }, 3000);
+  });
 }
+
+
 
 // Global anchor link event setup to automatically close mobile menu
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
