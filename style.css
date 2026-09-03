@@ -1073,6 +1073,7 @@ footer {
 
 .footer-logo span {
   color: var(--teal-light);
+  margin-left: 8px;
 }
 
 footer p {
