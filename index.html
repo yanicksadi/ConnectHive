@@ -291,121 +291,88 @@
         Every event tells a story. Here's a glimpse of ConnectHive in action.
       </p>
 
-      <div class="gallery-slider" id="gallerySlider">
-        <!-- Progress bar -->
-        <div class="slider-progress">
-          <div class="slider-progress-fill" id="sliderProgress"></div>
+    <div class="gallery-slider" id="gallerySlider">
+  <!-- Progress bar -->
+  <div class="slider-progress">
+    <div class="slider-progress-fill" id="sliderProgress"></div>
+  </div>
+
+  <!-- Main track -->
+  <div class="slider-track-wrap" id="sliderTrackWrap">
+    <div class="slider-track" id="sliderTrack">
+      
+      <!-- Slide 0: Corporate Retreat -->
+      <div class="slide active">
+        <div class="slide-image-wrapper">
+          <img src="images/game3.JPG" alt="Full-Day Corporate Retreat" />
         </div>
-
-        <!-- Main track -->
-        <div class="slider-track-wrap" id="sliderTrackWrap">
-          <div class="slider-track" id="sliderTrack">
-            <div class="slide active">
-              <div class="slide-image-wrapper">
-                <img
-                  src="images/game3.JPG"
-                  alt="Full-Day Corporate Retreat"
-                />
-              </div>
-              <div class="slide-caption">
-                <span class="slide-tag">Team Building</span>
-                <h3>Full-Day Corporate Retreat</h3>
-                <p>A full-team experience in the heart of Kigali, Rwanda</p>
-              </div>
-            </div>
-
-            <div class="slide">
-              <div class="slide-image-wrapper">
-                <img
-                  src="images/game2.JPG"
-                  alt="Bonding Session"
-                />
-              </div>
-              <div class="slide-caption">
-                <span class="slide-tag">Cultural</span>
-                <h3>Bonding Sessions</h3>
-                <p>Authentic cultural immersion for international groups</p>
-              </div>
-            </div>
-
-            <div class="slide">
-              <div class="slide-image-wrapper">
-                <img src="images/olympics.JPG" alt="Outdoor Olympics" />
-              </div>
-              <div class="slide-caption">
-                <span class="slide-tag">Outdoor</span>
-                <h3>Outdoor Olympics</h3>
-                <p>Competitive team challenges in beautiful Kigali</p>
-              </div>
-            </div>
-
-            <div class="slide">
-              <div class="slide-image-wrapper">
-                <img src="images/leaders.JPG" alt="Leadership Workshop" />
-              </div>
-              <div class="slide-caption">
-                <span class="slide-tag">Workshop</span>
-                <h3>Leadership Workshop</h3>
-                <p>Building stronger leaders through interactive sessions</p>
-              </div>
-            </div>
-
-            <div class="slide">
-              <div class="slide-image-wrapper">
-                <img
-                  src="images/celebrate.JPG"
-                  alt="Milestone Celebration"
-                />
-              </div>
-              <div class="slide-caption">
-                <span class="slide-tag">Celebration</span>
-                <h3>Milestone Celebration</h3>
-                <p>Celebrating achievements with style and impact</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Navigation Buttons -->
-        <button
-          class="slider-btn prev"
-          id="sliderPrev"
-          aria-label="Previous slide"
-        >
-          ‹
-        </button>
-        <button class="slider-btn next" id="sliderNext" aria-label="Next slide">
-          ›
-        </button>
-
-        <!-- Thumbnails -->
-        <!-- Thumbnails - Full Width -->
-        <div class="slider-thumbs" id="sliderThumbs">
-          <div class="thumb active" data-index="0">
-            <img src="images/game1.JPG" alt="Thumb 1" loading="lazy" />
-          </div>
-          <div class="thumb" data-index="1">
-            <img src="images/game2.JPG" alt="Thumb 2" loading="lazy" />
-          </div>
-          <div class="thumb" data-index="2">
-            <img
-              src="images/game3.JPG"
-              alt="Thumb 3"
-              loading="lazy"
-            />
-          </div>
-          <div class="thumb" data-index="3">
-            <img src="images/game4.JPG" alt="Thumb 4" loading="lazy" />
-          </div>
-          <div class="thumb" data-index="4">
-            <img
-              src="images/Team.JPG"
-              alt="Thumb 5"
-              loading="lazy"
-            />
-          </div>
+        <div class="slide-caption">
+          <span class="slide-tag">Team Building</span>
+          <h3>Full-Day Corporate Retreat</h3>
+          <p>A full-team experience in the heart of Kigali, Rwanda</p>
         </div>
       </div>
+
+      <!-- Slide 1: Bonding Sessions -->
+      <div class="slide">
+        <div class="slide-image-wrapper">
+          <img src="images/game2.JPG" alt="Bonding Session" />
+        </div>
+        <div class="slide-caption">
+          <span class="slide-tag">Cultural</span>
+          <h3>Bonding Sessions</h3>
+          <p>Authentic cultural immersion for international groups</p>
+        </div>
+      </div>
+
+      <!-- Slide 2: Outdoor Olympics -->
+      <div class="slide">
+        <div class="slide-image-wrapper">
+          <img src="images/olympics.JPG" alt="Outdoor Olympics" />
+        </div>
+        <div class="slide-caption">
+          <span class="slide-tag">Outdoor</span>
+          <h3>Outdoor Olympics</h3>
+          <p>Competitive team challenges in beautiful Kigali</p>
+        </div>
+      </div>
+
+      <!-- Slide 3: Milestone Celebration -->
+      <div class="slide">
+        <div class="slide-image-wrapper">
+          <img src="images/celebrate.JPG" alt="Milestone Celebration" />
+        </div>
+        <div class="slide-caption">
+          <span class="slide-tag">Celebration</span>
+          <h3>Milestone Celebration</h3>
+          <p>Celebrating achievements with style and impact</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <button class="slider-btn prev" id="sliderPrev" aria-label="Previous slide">‹</button>
+  <button class="slider-btn next" id="sliderNext" aria-label="Next slide">›</button>
+
+  <!-- Thumbnails -->
+  <div class="slider-thumbs" id="sliderThumbs">
+    <div class="thumb active" data-index="0">
+      <img src="images/game3.JPG" alt="Thumb: Corporate Retreat" loading="lazy" />
+    </div>
+    <div class="thumb" data-index="1">
+      <img src="images/game2.JPG" alt="Thumb: Bonding Sessions" loading="lazy" />
+    </div>
+    <div class="thumb" data-index="2">
+      <img src="images/olympics.JPG" alt="Thumb: Outdoor Olympics" loading="lazy" />
+    </div>
+    <div class="thumb" data-index="3">
+      <img src="images/celebrate.JPG" alt="Thumb: Milestone Celebration" loading="lazy" />
+    </div>
+  </div>
+</div>
+
     </section>
     <!-- CONTACT -->
     <section id="contact">
